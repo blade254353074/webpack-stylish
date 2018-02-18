@@ -1,47 +1,58 @@
 'use strict';
 
+/* eslint no-console: off */
+
 const path = require('path');
 const assert = require('assert');
 const execa = require('execa');
 const strip = require('strip-ansi');
 
-describe('webpack-stylish', () => {
-  const binPath = path.resolve(__dirname, '../node_modules/.bin/webpack');
+const binPath = path.resolve(__dirname, '../node_modules/.bin/webpack');
+const t = (...args) => it(...args).timeout(5e3);
 
-  it('should report', (done) => {
+function x(config, then) {
+  const args = [binPath, ['--config', config]];
+
+  execa(...args)
+    .catch((error) => { console.log(error); })
+    .then(then);
+}
+
+describe('webpack-stylish', () => {
+  t('should report', (done) => {
     const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.config.js');
 
-    execa(binPath, ['--config', configPath]).then((result) => {
+    x(configPath, (result) => {
       const text = strip(result.stdout);
       assert(text.indexOf('webpack v') === 0);
       done();
     });
   });
 
-  it('should report: MutliCompiler', (done) => {
+  t('should report: MutliCompiler', (done) => {
     const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.multi.config.js');
 
-    execa(binPath, ['--config', configPath]).then((result) => {
+    x(configPath, (result) => {
       const text = strip(result.stdout);
       assert(text.indexOf('webpack v') === 0);
       done();
     });
   });
 
-  it('should report: no NamedModulesPlugin', (done) => {
+  t('should report: no NamedModulesPlugin', (done) => {
     const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.no-named.config.js');
 
-    execa(binPath, ['--config', configPath]).then((result) => {
+    x(configPath, (result) => {
       const text = strip(result.stdout);
       assert(text.indexOf('webpack v') === 0);
       done();
     });
   });
 
-  it('should report: HtmlWebpackPlugin', (done) => {
+  t('should report: HtmlWebpackPlugin', (done) => {
     const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.html.config.js');
 
-    execa(binPath, ['--config', configPath]).then((result) => {
+    x(configPath, (result) => {
       const text = strip(result.stdout);
       assert(text.indexOf('webpack v') === 0);
       assert(text.indexOf('180 B') > 0);
