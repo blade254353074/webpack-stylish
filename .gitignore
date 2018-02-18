@@ -4,6 +4,7 @@ node_modules
 coverage
 coverage.lcov
 npm-debug.log
+test/fixtures/*/dist
 test/fixtures/*/output.*
 test/fixtures/*/client
 test/fixtures/*/server
