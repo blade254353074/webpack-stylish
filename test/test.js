@@ -2,6 +2,8 @@
 
 /* eslint no-console: off */
 
+require('loud-rejection')();
+
 const path = require('path');
 const assert = require('assert');
 const execa = require('execa');
@@ -49,14 +51,15 @@ describe('webpack-stylish', () => {
     });
   });
 
-  t('should report: HtmlWebpackPlugin', (done) => {
-    const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.html.config.js');
+  t('should report for loaders', (done) => {
+    const configPath = path.resolve(__dirname, 'fixtures/basic/webpack.loaders.config.js');
 
     x(configPath, (result) => {
       const text = strip(result.stdout);
       assert(text.indexOf('webpack v') === 0);
       assert(text.indexOf('180 B') > 0);
-      assert(text.indexOf('html       index.html') > 0);
+      assert(text.indexOf('html  index.html') > 0);
+      assert(text.indexOf('85 kB    jpg') > 0);
       done();
     });
   });
